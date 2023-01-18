@@ -2,49 +2,76 @@
 % Please edit documentation in R/reporter-buildkite.R
 \name{BuildkiteReporter}
 \alias{BuildkiteReporter}
-\title{Test reporter: Teamcity format.}
+\title{Test reporter: Buildkite format.}
 \description{
-This reporter will output results in the Teamcity message format.
-For more information about Teamcity messages, see
-http://confluence.jetbrains.com/display/TCD7/Build+Script+Interaction+with+TeamCity
+This reporter is an extension of ParallelProgressReporter see
+source https://github.com/r-lib/testthat/blob/main/R/reporter-progress.R#L386
+The overriden functions here are modified versions of the functions
+on the ParallelProgressReporter.
+}
+\details{
+This reporter gives us
+\itemize{
+\item Regularly updates progress logs
+\item Time for each test file to run
+\item All errors and warnings
+}
+
+This overrides some functions so that
+\itemize{
+\item It is less chatty (updates every 1 second) so build log is not too long
+\item There is no spinner (as we are not running interactively)
+}
+
+In the future we could extend this to
+\itemize{
+\item Have more foldable sections
+\item Report time for every test within a file
+}
 }
 \concept{reporters}
-\section{Super class}{
-\code{\link[testthat:Reporter]{testthat::Reporter}} -> \code{BuidlkiteReporter}
+\section{Super classes}{
+\code{\link[testthat:Reporter]{testthat::Reporter}} -> \code{\link[testthat:ProgressReporter]{testthat::ProgressReporter}} -> \code{\link[testthat:ParallelProgressReporter]{testthat::ParallelProgressReporter}} -> \code{BuidlkiteReporter}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-BuidlkiteReporter-new}{\code{BuildkiteReporter$new()}}
-\item \href{#method-BuidlkiteReporter-start_context}{\code{BuildkiteReporter$start_context()}}
-\item \href{#method-BuidlkiteReporter-end_context}{\code{BuildkiteReporter$end_context()}}
-\item \href{#method-BuidlkiteReporter-start_test}{\code{BuildkiteReporter$start_test()}}
-\item \href{#method-BuidlkiteReporter-end_test}{\code{BuildkiteReporter$end_test()}}
-\item \href{#method-BuidlkiteReporter-add_result}{\code{BuildkiteReporter$add_result()}}
-\item \href{#method-BuidlkiteReporter-clone}{\code{BuildkiteReporter$clone()}}
+\item \href{#method-new}{\code{BuildkiteReporter$new()}}
+\item \href{#method-update}{\code{BuildkiteReporter$update()}}
+\item \href{#method-clone}{\code{BuildkiteReporter$clone()}}
 }
 }
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
-<ul>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id=".start_context"><a href='../../testthat/html/Reporter.html#method-Reporter-.start_context'><code>testthat::Reporter$.start_context()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="cat_line"><a href='../../testthat/html/Reporter.html#method-Reporter-cat_line'><code>testthat::Reporter$cat_line()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="cat_tight"><a href='../../testthat/html/Reporter.html#method-Reporter-cat_tight'><code>testthat::Reporter$cat_tight()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="end_context_if_started"><a href='../../testthat/html/Reporter.html#method-Reporter-end_context_if_started'><code>testthat::Reporter$end_context_if_started()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="end_file"><a href='../../testthat/html/Reporter.html#method-Reporter-end_file'><code>testthat::Reporter$end_file()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="end_reporter"><a href='../../testthat/html/Reporter.html#method-Reporter-end_reporter'><code>testthat::Reporter$end_reporter()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="is_full"><a href='../../testthat/html/Reporter.html#method-Reporter-is_full'><code>testthat::Reporter$is_full()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="local_user_output"><a href='../../testthat/html/Reporter.html#method-Reporter-local_user_output'><code>testthat::Reporter$local_user_output()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="rule"><a href='../../testthat/html/Reporter.html#method-Reporter-rule'><code>testthat::Reporter$rule()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="start_file"><a href='../../testthat/html/Reporter.html#method-Reporter-start_file'><code>testthat::Reporter$start_file()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="start_reporter"><a href='../../testthat/html/Reporter.html#method-Reporter-start_reporter'><code>testthat::Reporter$start_reporter()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="update"><a href='../../testthat/html/Reporter.html#method-Reporter-update'><code>testthat::Reporter$update()</code></a></span></li>
-</ul>
-</details>
-}}
+\if{html}{
+\out{<details ><summary>Inherited methods</summary>}
+\itemize{
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id=".start_context">}\href{../../testthat/html/Reporter.html#method-.start_context}{\code{testthat::Reporter$.start_context()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="cat_line">}\href{../../testthat/html/Reporter.html#method-cat_line}{\code{testthat::Reporter$cat_line()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="cat_tight">}\href{../../testthat/html/Reporter.html#method-cat_tight}{\code{testthat::Reporter$cat_tight()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="end_context_if_started">}\href{../../testthat/html/Reporter.html#method-end_context_if_started}{\code{testthat::Reporter$end_context_if_started()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="end_test">}\href{../../testthat/html/Reporter.html#method-end_test}{\code{testthat::Reporter$end_test()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="local_user_output">}\href{../../testthat/html/Reporter.html#method-local_user_output}{\code{testthat::Reporter$local_user_output()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="rule">}\href{../../testthat/html/Reporter.html#method-rule}{\code{testthat::Reporter$rule()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="Reporter" data-id="start_test">}\href{../../testthat/html/Reporter.html#method-start_test}{\code{testthat::Reporter$start_test()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ProgressReporter" data-id="cr">}\href{../../testthat/html/ProgressReporter.html#method-cr}{\code{testthat::ProgressReporter$cr()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ProgressReporter" data-id="is_full">}\href{../../testthat/html/ProgressReporter.html#method-is_full}{\code{testthat::ProgressReporter$is_full()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ProgressReporter" data-id="report_issues">}\href{../../testthat/html/ProgressReporter.html#method-report_issues}{\code{testthat::ProgressReporter$report_issues()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ProgressReporter" data-id="should_update">}\href{../../testthat/html/ProgressReporter.html#method-should_update}{\code{testthat::ProgressReporter$should_update()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ProgressReporter" data-id="show_status">}\href{../../testthat/html/ProgressReporter.html#method-show_status}{\code{testthat::ProgressReporter$show_status()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ProgressReporter" data-id="start_reporter">}\href{../../testthat/html/ProgressReporter.html#method-start_reporter}{\code{testthat::ProgressReporter$start_reporter()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ParallelProgressReporter" data-id="add_result">}\href{../../testthat/html/ParallelProgressReporter.html#method-add_result}{\code{testthat::ParallelProgressReporter$add_result()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ParallelProgressReporter" data-id="end_context">}\href{../../testthat/html/ParallelProgressReporter.html#method-end_context}{\code{testthat::ParallelProgressReporter$end_context()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ParallelProgressReporter" data-id="end_file">}\href{../../testthat/html/ParallelProgressReporter.html#method-end_file}{\code{testthat::ParallelProgressReporter$end_file()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ParallelProgressReporter" data-id="end_reporter">}\href{../../testthat/html/ParallelProgressReporter.html#method-end_reporter}{\code{testthat::ParallelProgressReporter$end_reporter()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ParallelProgressReporter" data-id="show_header">}\href{../../testthat/html/ParallelProgressReporter.html#method-show_header}{\code{testthat::ParallelProgressReporter$show_header()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ParallelProgressReporter" data-id="start_context">}\href{../../testthat/html/ParallelProgressReporter.html#method-start_context}{\code{testthat::ParallelProgressReporter$start_context()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ParallelProgressReporter" data-id="start_file">}\href{../../testthat/html/ParallelProgressReporter.html#method-start_file}{\code{testthat::ParallelProgressReporter$start_file()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="testthat" data-topic="ParallelProgressReporter" data-id="status_data">}\href{../../testthat/html/ParallelProgressReporter.html#method-status_data}{\code{testthat::ParallelProgressReporter$status_data()}}\out{</span>}
+}
+\out{</details>}
+}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BuidlkiteReporter-new"></a>}}
-\if{latex}{\out{\hypertarget{method-BuidlkiteReporter-new}{}}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BuildkiteReporter$new(...)}\if{html}{\out{</div>}}
@@ -52,53 +79,17 @@ http://confluence.jetbrains.com/display/TCD7/Build+Script+Interaction+with+TeamC
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BuidlkiteReporter-start_context"></a>}}
-\if{latex}{\out{\hypertarget{method-BuidlkiteReporter-start_context}{}}}
-\subsection{Method \code{start_context()}}{
+\if{html}{\out{<a id="method-update"></a>}}
+\if{latex}{\out{\hypertarget{method-update}{}}}
+\subsection{Method \code{update()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BuildkiteReporter$start_context(context)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BuildkiteReporter$update(force = FALSE)}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BuidlkiteReporter-end_context"></a>}}
-\if{latex}{\out{\hypertarget{method-BuidlkiteReporter-end_context}{}}}
-\subsection{Method \code{end_context()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BuildkiteReporter$end_context(context)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BuidlkiteReporter-start_test"></a>}}
-\if{latex}{\out{\hypertarget{method-BuidlkiteReporter-start_test}{}}}
-\subsection{Method \code{start_test()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BuildkiteReporter$start_test(context, test)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BuidlkiteReporter-end_test"></a>}}
-\if{latex}{\out{\hypertarget{method-BuidlkiteReporter-end_test}{}}}
-\subsection{Method \code{end_test()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BuildkiteReporter$end_test(context, test)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BuidlkiteReporter-add_result"></a>}}
-\if{latex}{\out{\hypertarget{method-BuidlkiteReporter-add_result}{}}}
-\subsection{Method \code{add_result()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BuildkiteReporter$add_result(context, test, result)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BuidlkiteReporter-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-BuidlkiteReporter-clone}{}}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

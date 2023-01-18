@@ -1,8 +1,22 @@
-#' Test reporter: Teamcity format.
+#' Test reporter: Buildkite format.
 #'
-#' This reporter will output results in the Teamcity message format.
-#' For more information about Teamcity messages, see
-#' http://confluence.jetbrains.com/display/TCD7/Build+Script+Interaction+with+TeamCity
+#' This reporter is an extension of ParallelProgressReporter see
+#' source https://github.com/r-lib/testthat/blob/main/R/reporter-progress.R#L386
+#' The overriden functions here are modified versions of the functions
+#' on the ParallelProgressReporter.
+#'
+#' This reporter gives us
+#' * Regularly updates progress logs
+#' * Time for each test file to run
+#' * All errors and warnings
+#'
+#' This overrides some functions so that
+#' * It is less chatty (updates every 1 second) so build log is not too long
+#' * There is no spinner (as we are not running interactively)
+#'
+#' In the future we could extend this to
+#' * Have more foldable sections
+#' * Report time for every test within a file
 #'
 #' @export
 #' @family reporters
@@ -13,7 +27,8 @@ BuildkiteReporter <- R6::R6Class(
 
     initialize = function(...) {
       super$initialize(...)
-      self$update_interval <- 1
+      self$update_interval <- 1 ## Print a progress message every second
+      self$min_time <- 0 ## Print run time for all test files
     },
 
     update = function(force = FALSE) {

@@ -1,10 +1,13 @@
 Package: testthat.buildkite
-Title: What the Package Does (One Line, Title Case)
+Title: A testthat reporter for buildkite
 Version: 0.0.1
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Robert", "Ashton", , "r.ashton@imperial.ac.uk", 
+           role = c("aut", "cre")),
+    person("Imperial College of Science, Technology and Medicine",
+             role = "cph"))
+Description: A testthat reporter that prints progress output in a format for
+    use in buildkite logs.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
