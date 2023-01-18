@@ -1,7 +1,7 @@
 Package: testthat.buildkite
 Title: A testthat reporter for buildkite
 Version: 0.0.1
-Authors@R: 
+Authors@R: c(
     person("Robert", "Ashton", , "r.ashton@imperial.ac.uk", 
            role = c("aut", "cre")),
     person("Imperial College of Science, Technology and Medicine",
