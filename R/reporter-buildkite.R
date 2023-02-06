@@ -42,6 +42,23 @@ BuildkiteReporter <- R6::R6Class(
       message <- testthat:::strpad(message, self$width)
       message <- cli::ansi_substr(message, 1, self$width)
       self$cat_tight(self$cr(), message)
+    },
+
+    ## This prints the full trace in the issue_summary
+    ## Default is to truncate this to max 20 lines
+    report_issues = function(issues) {
+      if (issues$size() > 0) {
+        self$rule()
+
+        issues <- issues$as_list()
+        summary <- vapply(issues, testthat:::issue_summary,
+                          FUN.VALUE = character(1),
+                          simplify = "none")
+        self$cat_tight(paste(summary, collapse = "\n\n"))
+
+        self$cat_line()
+        self$rule()
+      }
     }
   )
 )
