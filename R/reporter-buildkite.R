@@ -52,8 +52,7 @@ BuildkiteReporter <- R6::R6Class(
 
         issues <- issues$as_list()
         summary <- vapply(issues, testthat:::issue_summary,
-                          FUN.VALUE = character(1),
-                          simplify = "none")
+                          FUN.VALUE = character(1))
         self$cat_tight(paste(summary, collapse = "\n\n"))
 
         self$cat_line()
